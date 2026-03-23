@@ -1,8 +1,8 @@
 import { and, eq, gte, lt, sql } from 'drizzle-orm'
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { db } from '../db/index.js'
-import { transactions } from '../db/schema.js'
+import { db } from '@/db'
+import { transactions } from '@/db/schema'
 
 function getCurrentMonth(): string {
   const now = new Date()

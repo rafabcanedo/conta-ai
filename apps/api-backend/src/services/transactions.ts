@@ -1,25 +1,7 @@
-import { and, eq, gte, lt } from 'drizzle-orm'
-import { db } from '../db/index.js'
-import { transactions } from '../db/schema.js'
-import type { Category } from '../config/categories.js'
-import type { AccountType, TransactionStatus, TransactionType } from '../config/enums.js'
-
-export interface CreateTransactionInput {
-  description: string
-  amount: number
-  category: Category
-  type: TransactionType
-  accountType: AccountType
-  status: TransactionStatus
-  transactionDate: string
-}
-
-export interface ListTransactionsFilters {
-  type?: TransactionType
-  accountType?: AccountType
-  status?: TransactionStatus
-  month?: string
-}
+import { and, count, eq, gte, lt } from 'drizzle-orm'
+import { db } from '@/db'
+import { transactions } from '@/db/schema'
+import { CreateTransactionInput, ListTransactionsFilters } from '@/types'
 
 export async function createTransaction(input: CreateTransactionInput) {
   const [transaction] = await db.insert(transactions).values(input).returning()
@@ -27,6 +9,8 @@ export async function createTransaction(input: CreateTransactionInput) {
 }
 
 export async function listTransactions(filters: ListTransactionsFilters = {}) {
+  const { page = 1, limit = 20 } = filters
+  const offset = (page - 1) * limit
   const conditions = []
 
   if (filters.type) conditions.push(eq(transactions.type, filters.type))
@@ -41,10 +25,12 @@ export async function listTransactions(filters: ListTransactionsFilters = {}) {
     conditions.push(lt(transactions.transactionDate, end))
   }
 
-  return await db
-    .select()
-    .from(transactions)
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
+  const where = conditions.length > 0 ? and(...conditions) : undefined
+
+  const [{ total }] = await db.select({ total: count() }).from(transactions).where(where)
+  const data = await db.select().from(transactions).where(where).limit(limit).offset(offset)
+
+  return { data, total: Number(total), page, limit }
 }
 
 export async function getTransactionById(id: number) {

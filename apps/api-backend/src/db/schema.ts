@@ -10,8 +10,8 @@ import {
   check,
   index,
 } from 'drizzle-orm/pg-core'
-import { ACCOUNT_TYPES, TRANSACTION_STATUSES, TRANSACTION_TYPES } from '../config/enums.js'
-import { CATEGORIES } from '../config/categories.js'
+import { ACCOUNT_TYPES, TRANSACTION_STATUSES, TRANSACTION_TYPES } from '@/config/enums'
+import { CATEGORIES } from '@/config/categories'
 
 export const recurringRules = pgTable('recurring_rules', {
   id: serial('id').primaryKey(),

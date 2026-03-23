@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { CATEGORIES } from '../config/categories.js'
-import { ACCOUNT_TYPES, TRANSACTION_STATUSES, TRANSACTION_TYPES } from '../config/enums.js'
-import * as transactionService from '../services/transactions.js'
+import { CATEGORIES } from '@/config/categories'
+import { ACCOUNT_TYPES, TRANSACTION_STATUSES, TRANSACTION_TYPES } from '@/config/enums'
+import * as transactionService from '@/services/transactions'
+import { IdParams } from '@/types'
 
 const createBody = z.object({
   description: z.string().min(1),
@@ -21,6 +22,8 @@ const listQuery = z.object({
   account_type: z.enum(ACCOUNT_TYPES).optional(),
   status: z.enum(TRANSACTION_STATUSES).optional(),
   month: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+  page: z.coerce.number().int().positive().optional().default(1),
+  limit: z.coerce.number().int().positive().max(100).optional().default(20),
 })
 
 export async function transactionsRoutes(app: FastifyInstance) {
@@ -45,19 +48,21 @@ export async function transactionsRoutes(app: FastifyInstance) {
       accountType: query.account_type,
       status: query.status,
       month: query.month,
+      page: query.page,
+      limit: query.limit,
     })
     return reply.send(result)
   })
 
   app.get('/transactions/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const transaction = await transactionService.getTransactionById(Number(id))
     if (!transaction) return reply.status(404).send({ message: 'Transaction not found' })
     return reply.send(transaction)
   })
 
   app.put('/transactions/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const body = updateBody.parse(request.body)
     const transaction = await transactionService.updateTransaction(Number(id), {
       description: body.description,
@@ -73,14 +78,14 @@ export async function transactionsRoutes(app: FastifyInstance) {
   })
 
   app.delete('/transactions/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const transaction = await transactionService.deleteTransaction(Number(id))
     if (!transaction) return reply.status(404).send({ message: 'Transaction not found' })
     return reply.status(204).send()
   })
 
   app.patch('/transactions/:id/confirm', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const transaction = await transactionService.confirmTransaction(Number(id))
     if (!transaction) return reply.status(404).send({ message: 'Transaction not found' })
     return reply.send(transaction)

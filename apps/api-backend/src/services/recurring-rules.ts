@@ -1,17 +1,7 @@
 import { eq } from 'drizzle-orm'
-import { db } from '../db/index.js'
-import { recurringRules, systemConfig, transactions } from '../db/schema.js'
-import type { Category } from '../config/categories.js'
-import type { AccountType, TransactionType } from '../config/enums.js'
-
-export interface CreateRecurringRuleInput {
-  description: string
-  amount: number
-  category: Category
-  type: TransactionType
-  accountType: AccountType
-  dayOfMonth: number
-}
+import { db } from '@/db'
+import { recurringRules, systemConfig, transactions } from '@/db/schema'
+import { CreateRecurringRuleInput } from '@/types'
 
 export async function createRule(input: CreateRecurringRuleInput) {
   const [rule] = await db.insert(recurringRules).values(input).returning()

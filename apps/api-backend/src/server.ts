@@ -1,10 +1,10 @@
 import fastify from 'fastify'
-import { processRecurrences } from './services/recurring-rules.js'
-import { transactionsRoutes } from './routes/transactions.js'
-import { recurringRulesRoutes } from './routes/recurring-rules.js'
-import { summaryRoutes } from './routes/summary.js'
-import { creditCardsRoutes } from './routes/credit-cards.js'
-import { zodErrorsPlugin } from './plugins/zod-errors.js'
+import { processRecurrences } from '@/services/recurring-rules'
+import { transactionsRoutes } from '@/routes/transactions'
+import { recurringRulesRoutes } from '@/routes/recurring-rules'
+import { summaryRoutes } from '@/routes/summary'
+import { creditCardsRoutes } from '@/routes/credit-cards'
+import { zodErrorsPlugin } from '@/plugins/zod-errors'
 
 const app = fastify({
   logger: {

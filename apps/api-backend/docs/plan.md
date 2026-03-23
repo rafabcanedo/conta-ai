@@ -318,7 +318,7 @@ Handles recurring rule logic called by `routes/recurring-rules.ts`, plus the sta
 
 ---
 
-## 10. Open Points (to refine before or during implementation)
+## 10. Open Points (resolved)
 
-- Should `GET /transactions` be paginated, or is a simple list acceptable for MVP?
-- Should the `system_config` table ever have more than one row, or is it always a singleton?
+- `GET /transactions` is paginated — `page` (default 1) and `limit` (default 20, max 100) query params; response is `{ data, total, page, limit }`.
+- `system_config` stays as a singleton for now; multi-row support can be added later if needed.

@@ -1,8 +1,9 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { CATEGORIES } from '../config/categories.js'
-import { ACCOUNT_TYPES, TRANSACTION_TYPES } from '../config/enums.js'
-import * as recurringRulesService from '../services/recurring-rules.js'
+import { CATEGORIES } from '@/config/categories'
+import { ACCOUNT_TYPES, TRANSACTION_TYPES } from '@/config/enums'
+import * as recurringRulesService from '@/services/recurring-rules'
+import { IdParams } from '@/types'
 
 const createBody = z.object({
   description: z.string().min(1),
@@ -35,7 +36,7 @@ export async function recurringRulesRoutes(app: FastifyInstance) {
   })
 
   app.put('/recurring-rules/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const body = updateBody.parse(request.body)
     const rule = await recurringRulesService.updateRule(Number(id), {
       description: body.description,
@@ -50,21 +51,21 @@ export async function recurringRulesRoutes(app: FastifyInstance) {
   })
 
   app.delete('/recurring-rules/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const rule = await recurringRulesService.deleteRule(Number(id))
     if (!rule) return reply.status(404).send({ message: 'Recurring rule not found' })
     return reply.status(204).send()
   })
 
   app.patch('/recurring-rules/:id/activate', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const rule = await recurringRulesService.activateRule(Number(id))
     if (!rule) return reply.status(404).send({ message: 'Recurring rule not found' })
     return reply.send(rule)
   })
 
   app.patch('/recurring-rules/:id/deactivate', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const rule = await recurringRulesService.deactivateRule(Number(id))
     if (!rule) return reply.status(404).send({ message: 'Recurring rule not found' })
     return reply.send(rule)

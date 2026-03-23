@@ -1,8 +1,9 @@
 import { eq } from 'drizzle-orm'
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
-import { db } from '../db/index.js'
-import { creditCards, transactions } from '../db/schema.js'
+import { db } from '@/db'
+import { creditCards, transactions } from '@/db/schema'
+import { IdParams } from '@/types'
 
 const createBody = z.object({
   name: z.string().min(1),
@@ -39,7 +40,7 @@ export async function creditCardsRoutes(app: FastifyInstance) {
   })
 
   app.put('/credit-cards/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const body = updateBody.parse(request.body)
     const [card] = await db
       .update(creditCards)
@@ -57,7 +58,7 @@ export async function creditCardsRoutes(app: FastifyInstance) {
   })
 
   app.delete('/credit-cards/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const [card] = await db
       .delete(creditCards)
       .where(eq(creditCards.id, Number(id)))
@@ -67,7 +68,7 @@ export async function creditCardsRoutes(app: FastifyInstance) {
   })
 
   app.post('/credit-cards/:id/pay', async (request, reply) => {
-    const { id } = request.params as { id: string }
+    const { id } = request.params as IdParams
     const body = payBody.parse(request.body)
 
     const [card] = await db
