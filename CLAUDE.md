@@ -40,7 +40,9 @@ npm run check        # biome check (lint + format)
 
 ### Database
 ```bash
-docker compose up -d   # starts PostgreSQL 17 on localhost:5432
+docker compose up -d      # starts PostgreSQL 17 on localhost:5432
+npm run db:generate       # generate migration files (run from apps/api-backend)
+npm run db:migrate        # apply migrations (run from apps/api-backend)
 ```
 
 Copy `.env.example` to `.env` and fill in credentials before starting.
