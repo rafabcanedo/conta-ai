@@ -292,29 +292,29 @@ Handles recurring rule logic called by `routes/recurring-rules.ts`, plus the sta
 
 ### Phase 1 — Setup
 - [x] Install dependencies (drizzle-orm, postgres, zod, drizzle-kit)
-- [ ] Create `drizzle.config.ts`
-- [ ] Create `db/index.ts` (db client)
-- [ ] Create `config/categories.ts` and `config/enums.ts`
+- [x] Create `drizzle.config.ts`
+- [x] Create `db/index.ts` (db client)
+- [x] Create `config/categories.ts` and `config/enums.ts`
 
 ### Phase 2 — Database Schema + Migration
-- [ ] Write `db/schema.ts` (all 4 tables + enum constants)
-- [ ] Run `drizzle-kit generate` to create initial migration
-- [ ] Run `drizzle-kit migrate` to apply to local DB
+- [x] Write `db/schema.ts` (all 4 tables + enum constants)
+- [x] Run `drizzle-kit generate` to create initial migration
+- [x] Run `drizzle-kit migrate` to apply to local DB
 
 ### Phase 3 — Services
-- [ ] Implement `services/recurring-rules.ts` (recurrence processing + rule logic)
-- [ ] Implement `services/transactions.ts` (transaction logic)
-- [ ] Hook recurrence processing into `server.ts` startup
+- [x] Implement `services/recurring-rules.ts` (recurrence processing + rule logic)
+- [x] Implement `services/transactions.ts` (transaction logic)
+- [x] Hook recurrence processing into `server.ts` startup
 
 ### Phase 4 — Routes
-- [ ] `routes/transactions.ts`
-- [ ] `routes/recurring-rules.ts`
-- [ ] `routes/summary.ts`
-- [ ] `routes/credit-cards.ts`
+- [x] `routes/transactions.ts`
+- [x] `routes/recurring-rules.ts`
+- [x] `routes/summary.ts`
+- [x] `routes/credit-cards.ts`
 
 ### Phase 5 — Error Handling Plugin
-- [ ] Implement `plugins/zod-errors.ts`
-- [ ] Register in `server.ts`
+- [x] Implement `plugins/zod-errors.ts`
+- [x] Register in `server.ts`
 
 ---
 

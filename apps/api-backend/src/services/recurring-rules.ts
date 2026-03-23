@@ -1,6 +1,63 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { recurringRules, systemConfig, transactions } from '../db/schema.js'
+import type { Category } from '../config/categories.js'
+import type { AccountType, TransactionType } from '../config/enums.js'
+
+export interface CreateRecurringRuleInput {
+  description: string
+  amount: number
+  category: Category
+  type: TransactionType
+  accountType: AccountType
+  dayOfMonth: number
+}
+
+export async function createRule(input: CreateRecurringRuleInput) {
+  const [rule] = await db.insert(recurringRules).values(input).returning()
+  return rule
+}
+
+export async function listRules() {
+  return await db.select().from(recurringRules)
+}
+
+export async function getRuleById(id: number) {
+  const [rule] = await db.select().from(recurringRules).where(eq(recurringRules.id, id))
+  return rule ?? null
+}
+
+export async function updateRule(id: number, input: Partial<CreateRecurringRuleInput>) {
+  const [rule] = await db
+    .update(recurringRules)
+    .set({ ...input, updatedAt: new Date() })
+    .where(eq(recurringRules.id, id))
+    .returning()
+  return rule ?? null
+}
+
+export async function deleteRule(id: number) {
+  const [rule] = await db.delete(recurringRules).where(eq(recurringRules.id, id)).returning()
+  return rule ?? null
+}
+
+export async function activateRule(id: number) {
+  const [rule] = await db
+    .update(recurringRules)
+    .set({ isActive: true, updatedAt: new Date() })
+    .where(eq(recurringRules.id, id))
+    .returning()
+  return rule ?? null
+}
+
+export async function deactivateRule(id: number) {
+  const [rule] = await db
+    .update(recurringRules)
+    .set({ isActive: false, updatedAt: new Date() })
+    .where(eq(recurringRules.id, id))
+    .returning()
+  return rule ?? null
+}
 
 function getCurrentMonth(): string {
   const now = new Date()
